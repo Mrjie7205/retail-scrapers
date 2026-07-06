@@ -1,0 +1,30 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+dist/
+build/
+
+# 用户运行产物不进入工具仓库
+data/
+output/
+*.csv
+*.jsonl
+*.parquet
+!examples/*.example.csv
+
+# 本地凭据、会话和浏览器状态
+.env
+.env.*
+auth.json
+cookies.json
+storage-state.json
+
+# 编辑器与系统文件
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
