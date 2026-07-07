@@ -13,12 +13,21 @@ Do not start by guessing prices from visible text. Machine-readable fields are u
 
 ## 2. Create an adapter
 
-Add a new adapter package:
+Generate a starter adapter package:
+
+```bash
+retail-scrape scaffold example-shop-us \
+  --display-name "Example Shop US" \
+  --country US
+```
+
+This creates:
 
 ```text
-src/retail_scrapers/adapters/<channel-id>/
+src/retail_scrapers/adapters/example_shop_us/
 ├─ __init__.py
 └─ adapter.py
+tests/test_example_shop_us_adapter.py
 ```
 
 Implement the two `ChannelAdapter` methods:

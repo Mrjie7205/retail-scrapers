@@ -141,6 +141,14 @@ for record in records:
 
 想增加新的零售商，可以从这里开始：
 
+```bash
+retail-scrape scaffold example-shop-us \
+  --display-name "Example Shop US" \
+  --country US
+```
+
+这会生成 adapter 包和对应测试文件，让 fork 用户把精力放在提取逻辑上，而不是重复写样板代码。
+
 - [架构说明](docs/架构说明.md)
 - [新增渠道指南](docs/新增渠道.md)
 - [Roadmap](ROADMAP.md)

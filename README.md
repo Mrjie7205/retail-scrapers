@@ -141,6 +141,14 @@ Async applications can use `scrape_catalog_async` and `scrape_prices_async` from
 
 Want to add another retailer? Start here:
 
+```bash
+retail-scrape scaffold example-shop-us \
+  --display-name "Example Shop US" \
+  --country US
+```
+
+This creates a starter adapter package and a matching test file, so a fork can focus on extraction logic instead of boilerplate.
+
 - [Architecture](docs/architecture.md)
 - [Adding a channel](docs/add-channel.md)
 - [Roadmap](ROADMAP.md)

@@ -12,6 +12,7 @@ from .input import read_targets
 from .output import write_records
 from .registry import list_channels
 from .runner import scrape_catalog, scrape_prices
+from .scaffold import create_adapter_scaffold
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -22,6 +23,11 @@ def _parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("channels", help="列出支持的渠道")
+
+    scaffold = sub.add_parser("scaffold", help="生成新渠道adapter骨架")
+    scaffold.add_argument("channel_id")
+    scaffold.add_argument("--display-name")
+    scaffold.add_argument("--country", default="XX")
 
     catalog = sub.add_parser("catalog", help="抓取渠道商品目录")
     catalog.add_argument("--channel", required=True)
@@ -67,6 +73,21 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "channels":
             print(json.dumps(list_channels(), ensure_ascii=False, indent=2))
+            return 0
+
+        if args.command == "scaffold":
+            paths = create_adapter_scaffold(
+                args.channel_id,
+                display_name=args.display_name,
+                country=args.country,
+            )
+            print(
+                json.dumps(
+                    {"created": [str(path) for path in paths]},
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
             return 0
 
         if args.command == "catalog":
