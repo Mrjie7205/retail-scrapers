@@ -27,6 +27,13 @@ def test_health_command(capsys):
     }
 
 
+def test_health_markdown_command(capsys):
+    assert main(["health", "--format", "markdown"]) == 0
+    output = capsys.readouterr().out
+    assert "| Channel | Market |" in output
+    assert "`elkjop-no`" in output
+
+
 def test_runtime_options_are_validated(capsys):
     assert main(["catalog", "--channel", "elkjop-no", "--timeout-ms", "0"]) == 1
     assert "timeout_ms" in capsys.readouterr().err

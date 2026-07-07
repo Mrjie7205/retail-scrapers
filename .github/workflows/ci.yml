@@ -30,8 +30,12 @@ jobs:
       - name: Unit tests
         run: pytest
 
-      - name: CLI smoke test
-        run: python -m retail_scrapers channels
+      - name: CLI smoke tests
+        run: |
+          python -m retail_scrapers channels
+          python -m retail_scrapers health
+          python -m retail_scrapers health --format markdown
+          python -m retail_scrapers doctor --skip-browser
 
       - name: Build wheel
         run: python -m pip wheel . --no-deps --wheel-dir dist

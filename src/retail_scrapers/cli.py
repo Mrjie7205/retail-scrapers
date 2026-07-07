@@ -27,7 +27,8 @@ def _parser() -> argparse.ArgumentParser:
 
     sub.add_parser("channels", help="列出支持的渠道")
 
-    sub.add_parser("health", help="显示内置渠道的能力和维护状态")
+    health = sub.add_parser("health", help="显示内置渠道的能力和维护状态")
+    health.add_argument("--format", choices=("json", "markdown"), default="json")
 
     doctor = sub.add_parser("doctor", help="检查本地运行环境")
     doctor.add_argument("--skip-browser", action="store_true")
@@ -84,7 +85,12 @@ def main(argv: list[str] | None = None) -> int:
             return 0
 
         if args.command == "health":
-            print(json.dumps(list_channel_health(), ensure_ascii=False, indent=2))
+            if args.format == "markdown":
+                from .health import channel_health_markdown
+
+                print(channel_health_markdown())
+            else:
+                print(json.dumps(list_channel_health(), ensure_ascii=False, indent=2))
             return 0
 
         if args.command == "doctor":

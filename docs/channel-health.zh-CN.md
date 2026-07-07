@@ -12,6 +12,7 @@ Actions → Manual live smoke test → Run workflow → channel=all
 
 ```bash
 retail-scrape health
+retail-scrape health --format markdown
 ```
 
 ## 内置渠道

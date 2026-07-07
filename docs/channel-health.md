@@ -12,6 +12,7 @@ You can also inspect the built-in metadata locally:
 
 ```bash
 retail-scrape health
+retail-scrape health --format markdown
 ```
 
 ## Built-in channels

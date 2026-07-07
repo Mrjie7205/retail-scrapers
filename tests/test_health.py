@@ -1,4 +1,4 @@
-from retail_scrapers.health import list_channel_health
+from retail_scrapers.health import channel_health_markdown, list_channel_health
 
 
 def test_channel_health_covers_builtin_adapters():
@@ -12,3 +12,10 @@ def test_channel_health_covers_builtin_adapters():
     assert all(row["catalog_strategy"] for row in rows)
     assert all(row["price_strategy"] for row in rows)
     assert all(row["maintenance_risk"] for row in rows)
+
+
+def test_channel_health_markdown_table():
+    text = channel_health_markdown()
+    assert "| Channel | Market |" in text
+    assert "`amazon-de`" in text
+    assert "Maintenance risk" in text

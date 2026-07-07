@@ -61,3 +61,33 @@ CHANNEL_HEALTH = (
 
 def list_channel_health() -> list[dict[str, str]]:
     return [row.to_dict() for row in CHANNEL_HEALTH]
+
+
+def channel_health_markdown() -> str:
+    headers = [
+        "Channel",
+        "Market",
+        "Catalog strategy",
+        "Price strategy",
+        "Validation",
+        "Maintenance risk",
+    ]
+    lines = [
+        "| " + " | ".join(headers) + " |",
+        "|---|---|---|---|---|---|",
+    ]
+    for row in CHANNEL_HEALTH:
+        values = [
+            f"`{row.channel}`",
+            row.market,
+            row.catalog_strategy,
+            row.price_strategy,
+            row.validation,
+            row.maintenance_risk,
+        ]
+        lines.append("| " + " | ".join(_escape_markdown_cell(value) for value in values) + " |")
+    return "\n".join(lines)
+
+
+def _escape_markdown_cell(value: str) -> str:
+    return value.replace("|", "\\|").replace("\n", " ")

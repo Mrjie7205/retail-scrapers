@@ -48,6 +48,7 @@ retail-scrape catalog \
 
 ```bash
 retail-scrape health
+retail-scrape health --format markdown
 ```
 
 | 渠道 ID | 市场 | 目录 | 价格 | 主要策略 |

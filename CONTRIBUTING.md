@@ -11,5 +11,6 @@ Before opening a pull request:
 3. Add offline fixture tests for parser behavior.
 4. Do not commit scraped results, credentials, cookies, personal information, or internal business data.
 5. Run `ruff check .`, `pytest`, and `mypy src/retail_scrapers`.
+6. Run `python -m retail_scrapers doctor --skip-browser` before opening the PR.
 
 Real retail websites may restrict automated access. Contributors are responsible for following the target site's terms and using reasonable request rates.

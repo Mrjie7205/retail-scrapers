@@ -48,6 +48,7 @@ For maintenance details, see [Channel health](docs/channel-health.md), or run:
 
 ```bash
 retail-scrape health
+retail-scrape health --format markdown
 ```
 
 | Channel ID | Market | Catalog | Price | Main strategy |
