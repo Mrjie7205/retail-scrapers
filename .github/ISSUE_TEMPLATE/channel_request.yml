@@ -1,0 +1,38 @@
+name: Channel request
+description: Propose a new public retail channel adapter.
+title: "[Channel]: "
+labels: ["channel-request"]
+body:
+  - type: input
+    id: retailer
+    attributes:
+      label: Retailer
+      placeholder: "Retailer name and country"
+    validations:
+      required: true
+  - type: input
+    id: catalog_url
+    attributes:
+      label: Public catalog URL
+      placeholder: "https://www.example.com/category"
+    validations:
+      required: true
+  - type: textarea
+    id: data_source
+    attributes:
+      label: Known data source
+      description: Mention visible APIs, JSON-LD, server HTML, or why Playwright may be required.
+  - type: textarea
+    id: completeness
+    attributes:
+      label: Completeness signal
+      description: Does the site expose total count, page count, SKU, availability, or stable product IDs?
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: The requested data is public and does not require login.
+          required: true
+        - label: The request does not involve personal data.
+          required: true

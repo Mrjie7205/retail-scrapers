@@ -1,0 +1,36 @@
+name: Adapter maintenance
+description: Track website changes, selector drift, endpoint changes, or smoke-test failures.
+title: "[Adapter maintenance]: "
+labels: ["adapter-maintenance"]
+body:
+  - type: input
+    id: channel
+    attributes:
+      label: Channel
+      placeholder: "elkjop-no"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Catalog extraction
+        - Price extraction
+        - Completeness validation
+        - Live smoke workflow
+        - Documentation
+    validations:
+      required: true
+  - type: textarea
+    id: observation
+    attributes:
+      label: Observation
+      description: What changed or started failing?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_fix
+    attributes:
+      label: Proposed fix
+      description: Optional notes on endpoint changes, parser updates, or validation adjustments.

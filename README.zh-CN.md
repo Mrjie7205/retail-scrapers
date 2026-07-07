@@ -2,18 +2,45 @@
 
 [English README](README.md)
 
-Retail Scrapers 是一个面向真实零售网站的 Python 抓取工具箱，用来提取商品目录和当前价格，并输出为统一的 JSONL 或 CSV。
+![Retail Scrapers social preview](assets/social-preview.png)
+
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-alpha-orange)
+![Output](https://img.shields.io/badge/output-JSONL%20%7C%20CSV-0f766e)
+
+面向真实零售网站的 API-first 商品目录与价格抓取工具箱。
 
 这个项目只负责一件事：把公开网页或前端接口里的零售数据，稳定地转成结构化记录。数据库、价格历史、汇率换算、商品匹配、告警和可视化，都由使用者按自己的业务场景决定。
 
-## 核心特点
+## 30 秒 demo
 
-- API 优先：优先复用零售网站前端公开调用的数据接口。
-- 浏览器兜底：需要渲染页面或建立会话时使用 Playwright。
-- 渠道隔离：每个零售商都是独立 adapter，方便单独维护和替换。
-- 统一输出：目录和价格结果都可以输出为 JSONL 或 CSV。
-- 内置校验：支持目录完整性、SKU 去重、价格抓取成功率检查。
-- 不内置抓取数据：仓库不保存用户结果、账号、Cookie、会话或私有业务映射表。
+```bash
+python -m pip install -e .
+python -m playwright install chromium
+
+retail-scrape catalog \
+  --channel elkjop-no \
+  --max-items 3 \
+  --no-strict \
+  --output output/elkjop.jsonl
+```
+
+示例输出：
+
+```json
+{"channel":"elkjop-no","country":"NO","sku":"123456","brand":"Example","title":"Example 55 inch 4K TV","url":"https://www.example.com/product/123456","price":7990.0,"currency":"NOK","availability":"in_stock"}
+```
+
+## 为什么做这个项目
+
+很多爬虫示例停留在“打开网页、解析文本”。真实零售网站需要更稳的模式：
+
+- API 优先：优先复用前端已经调用的结构化接口。
+- 浏览器兜底：页面需要渲染或会话设置时使用 Playwright。
+- 严格完整性检查：不要把半量目录伪装成成功。
+- 渠道隔离：一个零售商改版，不应该拖垮所有 adapter。
+- 不内置用户数据、Cookie、账号或私有商品映射。
 
 ## 已支持渠道
 
@@ -110,6 +137,17 @@ for record in records:
 
 异步应用可以使用 `retail_scrapers.runner` 中的 `scrape_catalog_async` 和 `scrape_prices_async`。
 
+## 方便 fork 的 adapter 结构
+
+想增加新的零售商，可以从这里开始：
+
+- [架构说明](docs/架构说明.md)
+- [新增渠道指南](docs/新增渠道.md)
+- [Roadmap](ROADMAP.md)
+- [示例输出](examples/output.example.jsonl)
+
+每个零售商都放在 `src/retail_scrapers/adapters/` 下的独立 adapter 包里。解析逻辑应使用离线 fixture 测试；真实网站测试放在手动触发的 smoke workflow 中。
+
 ## 输出原则
 
 - 保留网站原始币种，不默认做汇率换算。
@@ -128,8 +166,6 @@ ruff check .
 pytest
 mypy src/retail_scrapers
 ```
-
-整体设计见 [docs/架构说明.md](docs/架构说明.md)。新增渠道请阅读 [docs/新增渠道.md](docs/新增渠道.md)。
 
 ## 许可证
 

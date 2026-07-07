@@ -1,0 +1,4 @@
+channel,country,sku,brand,title,url,price,currency,availability,model,model_year,size_inch,scraped_at
+elkjop-no,NO,demo-1001,Example,Example Vision 55 inch 4K TV,https://www.example.com/product/demo-1001,7990.0,NOK,in_stock,VISION55,2026,55.0,2026-01-01T00:00:00Z
+boulanger-fr,FR,demo-2001,Example,TV Example Cinema 65 pouces Mini LED,https://www.example.com/ref/demo-2001,999.0,EUR,,CINEMA65,2026,65.0,2026-01-01T00:00:00Z
+currys-gb,GB,example-vision-43-inch-smart-tv,Example,Example Vision 43 inch smart tv,https://www.example.com/products/example-vision-43-inch-smart-tv.html,349.0,GBP,,,,43.0,2026-01-01T00:00:00Z

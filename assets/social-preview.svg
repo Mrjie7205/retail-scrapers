@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Retail Scrapers social preview</title>
+  <desc id="desc">API-first retail catalog and price extraction toolkit for Python and Playwright.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#08111f"/>
+      <stop offset="54%" stop-color="#101827"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="48%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#facc15"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.045" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect width="1280" height="640" fill="url(#grid)"/>
+  <circle cx="1120" cy="90" r="210" fill="#38bdf8" opacity="0.09"/>
+  <circle cx="1020" cy="570" r="260" fill="#22c55e" opacity="0.08"/>
+  <circle cx="180" cy="560" r="220" fill="#facc15" opacity="0.06"/>
+
+  <g transform="translate(78 72)">
+    <rect x="0" y="0" width="1124" height="496" rx="34" fill="#0f172a" opacity="0.86" filter="url(#softShadow)"/>
+    <rect x="0.5" y="0.5" width="1123" height="495" rx="33.5" fill="none" stroke="#ffffff" stroke-opacity="0.10"/>
+    <rect x="0" y="0" width="1124" height="78" rx="34" fill="#111827"/>
+    <path d="M0 44 Q0 0 44 0 H1080 Q1124 0 1124 44 V78 H0Z" fill="#111827"/>
+    <circle cx="38" cy="39" r="9" fill="#ef4444"/>
+    <circle cx="68" cy="39" r="9" fill="#facc15"/>
+    <circle cx="98" cy="39" r="9" fill="#22c55e"/>
+    <rect x="148" y="24" width="348" height="30" rx="15" fill="#020617" opacity="0.9"/>
+    <text x="168" y="45" fill="#94a3b8" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16">retail-scrapers / API-first extraction</text>
+  </g>
+
+  <g transform="translate(126 188)">
+    <text x="0" y="0" fill="#e5f3ff" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-2">
+      Retail Scrapers
+    </text>
+    <rect x="2" y="28" width="318" height="8" rx="4" fill="url(#accent)"/>
+    <text x="0" y="82" fill="#cbd5e1" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="27" font-weight="500">
+      API-first retail data extraction
+    </text>
+    <text x="0" y="126" fill="#94a3b8" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="23">
+      Python · Playwright · JSONL / CSV · strict completeness checks
+    </text>
+  </g>
+
+  <g transform="translate(128 380)" font-family="Inter, Segoe UI, Arial, sans-serif">
+    <g>
+      <rect x="0" y="0" width="182" height="48" rx="24" fill="#172033" stroke="#334155"/>
+      <circle cx="28" cy="24" r="10" fill="#38bdf8"/>
+      <text x="50" y="31" fill="#e2e8f0" font-size="20" font-weight="650">amazon-de</text>
+    </g>
+    <g transform="translate(202 0)">
+      <rect x="0" y="0" width="206" height="48" rx="24" fill="#172033" stroke="#334155"/>
+      <circle cx="28" cy="24" r="10" fill="#22c55e"/>
+      <text x="50" y="31" fill="#e2e8f0" font-size="20" font-weight="650">boulanger-fr</text>
+    </g>
+    <g transform="translate(0 64)">
+      <rect x="0" y="0" width="176" height="48" rx="24" fill="#172033" stroke="#334155"/>
+      <circle cx="28" cy="24" r="10" fill="#facc15"/>
+      <text x="50" y="31" fill="#e2e8f0" font-size="20" font-weight="650">currys-gb</text>
+    </g>
+    <g transform="translate(202 64)">
+      <rect x="0" y="0" width="174" height="48" rx="24" fill="#172033" stroke="#334155"/>
+      <circle cx="28" cy="24" r="10" fill="#a78bfa"/>
+      <text x="50" y="31" fill="#e2e8f0" font-size="20" font-weight="650">elkjop-no</text>
+    </g>
+  </g>
+
+  <g transform="translate(814 178)">
+    <rect x="0" y="0" width="306" height="250" rx="28" fill="#020617" opacity="0.82" stroke="#334155"/>
+    <text x="30" y="48" fill="#38bdf8" font-family="JetBrains Mono, Consolas, monospace" font-size="18">retail-scrape catalog</text>
+    <text x="30" y="88" fill="#cbd5e1" font-family="JetBrains Mono, Consolas, monospace" font-size="17">--channel elkjop-no</text>
+    <text x="30" y="122" fill="#cbd5e1" font-family="JetBrains Mono, Consolas, monospace" font-size="17">--max-items 3</text>
+    <text x="30" y="156" fill="#cbd5e1" font-family="JetBrains Mono, Consolas, monospace" font-size="17">--format jsonl</text>
+    <rect x="30" y="188" width="246" height="1" fill="#334155"/>
+    <text x="30" y="222" fill="#22c55e" font-family="JetBrains Mono, Consolas, monospace" font-size="17">✓ structured records</text>
+  </g>
+</svg>

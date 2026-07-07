@@ -2,18 +2,45 @@
 
 [中文文档](README.zh-CN.md)
 
-A lightweight Python toolkit for extracting product catalogs and current prices from real retail websites.
+![Retail Scrapers social preview](assets/social-preview.png)
+
+![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Status](https://img.shields.io/badge/status-alpha-orange)
+![Output](https://img.shields.io/badge/output-JSONL%20%7C%20CSV-0f766e)
+
+API-first product catalog and price extraction for real retail websites.
 
 Retail Scrapers focuses on one job: turning public retail pages and frontend APIs into structured records. It does not include a database, price-history system, currency conversion layer, product matching logic, alerting, or dashboards. Those downstream choices are intentionally left to the user.
 
-## What it does
+## 30-second demo
 
-- API-first extraction: reuse public frontend data calls when a retailer exposes them.
-- Browser fallback: use Playwright when a page needs rendering or session setup.
-- Channel isolation: each retailer lives in its own adapter.
-- Shared output format: catalog and price records can be written as JSONL or CSV.
-- Validation built in: check catalog completeness, duplicated SKUs, and price-run success rate.
-- No bundled scraped data: the repository does not store user results, accounts, cookies, sessions, or private business mapping tables.
+```bash
+python -m pip install -e .
+python -m playwright install chromium
+
+retail-scrape catalog \
+  --channel elkjop-no \
+  --max-items 3 \
+  --no-strict \
+  --output output/elkjop.jsonl
+```
+
+Example output:
+
+```json
+{"channel":"elkjop-no","country":"NO","sku":"123456","brand":"Example","title":"Example 55 inch 4K TV","url":"https://www.example.com/product/123456","price":7990.0,"currency":"NOK","availability":"in_stock"}
+```
+
+## Why this exists
+
+Most scraper examples stop at "grab a page and parse some text." Real retail websites need a stronger pattern:
+
+- API-first extraction when the frontend already calls a structured endpoint.
+- Browser fallback for pages that require rendering or session setup.
+- Strict completeness checks so a half-scraped catalog does not look successful.
+- Channel isolation so one retailer change does not break every other adapter.
+- No bundled user data, cookies, accounts, or private product mappings.
 
 ## Supported channels
 
@@ -110,6 +137,17 @@ for record in records:
 
 Async applications can use `scrape_catalog_async` and `scrape_prices_async` from `retail_scrapers.runner`.
 
+## Fork-friendly adapter design
+
+Want to add another retailer? Start here:
+
+- [Architecture](docs/architecture.md)
+- [Adding a channel](docs/add-channel.md)
+- [Roadmap](ROADMAP.md)
+- [Example output](examples/output.example.jsonl)
+
+Each retailer lives in its own adapter package under `src/retail_scrapers/adapters/`. Parser behavior should be covered by offline tests; live website checks belong in the manual smoke workflow.
+
 ## Output principles
 
 - Preserve the retailer's native currency; no default currency conversion.
@@ -128,8 +166,6 @@ ruff check .
 pytest
 mypy src/retail_scrapers
 ```
-
-For adapter design, see [docs/architecture.md](docs/architecture.md). For adding a new channel, see [docs/add-channel.md](docs/add-channel.md).
 
 ## License
 

@@ -15,6 +15,7 @@ output/
 *.jsonl
 *.parquet
 !examples/*.example.csv
+!examples/*.example.jsonl
 
 # 本地凭据、会话和浏览器状态
 .env

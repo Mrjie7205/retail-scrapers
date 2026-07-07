@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible problem with an existing adapter or shared runtime.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the failure and what you expected instead.
+    validations:
+      required: true
+  - type: input
+    id: channel
+    attributes:
+      label: Channel
+      placeholder: "amazon-de, boulanger-fr, currys-gb, elkjop-no"
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Paste the command you ran. Remove secrets, cookies, proxy URLs, and private data.
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste the smallest useful log excerpt. Do not include credentials or personal information.
+      render: text
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Local machine
+        - GitHub Actions
+        - Container / CI
+        - Other
+    validations:
+      required: true
