@@ -86,12 +86,66 @@ def test_{package}_adapter_identity():
 """
 
 
+def fixture_catalog_template(channel_id: str) -> str:
+    return f"""{{
+  "channel": "{channel_id}",
+  "items": [
+    {{
+      "sku": "demo-sku-1",
+      "brand": "Example",
+      "title": "Example 55 inch 4K TV",
+      "url": "https://www.example.com/product/demo-sku-1",
+      "price": 799.0,
+      "currency": "EUR",
+      "availability": "in_stock"
+    }}
+  ]
+}}
+"""
+
+
+def fixture_price_template(channel_id: str) -> str:
+    return f"""{{
+  "channel": "{channel_id}",
+  "sku": "demo-sku-1",
+  "price": 799.0,
+  "currency": "EUR",
+  "availability": "in_stock"
+}}
+"""
+
+
+def fixture_test_template(channel_id: str) -> str:
+    package = package_name(channel_id)
+    return f'''import json
+from pathlib import Path
+
+
+FIXTURE_DIR = Path(__file__).parent / "fixtures" / "{package}"
+
+
+def test_{package}_catalog_fixture_is_minimal_and_sanitized():
+    payload = json.loads((FIXTURE_DIR / "catalog.sample.json").read_text(encoding="utf-8"))
+    assert payload["channel"] == "{channel_id}"
+    assert payload["items"][0]["sku"] == "demo-sku-1"
+    assert "example.com" in payload["items"][0]["url"]
+
+
+def test_{package}_price_fixture_is_minimal_and_sanitized():
+    payload = json.loads((FIXTURE_DIR / "price.sample.json").read_text(encoding="utf-8"))
+    assert payload["channel"] == "{channel_id}"
+    assert payload["price"] > 0
+    assert payload["currency"]
+'''
+
+
 def create_adapter_scaffold(
     channel_id: str,
     *,
     display_name: str | None = None,
     country: str = "XX",
     root: Path | None = None,
+    with_fixtures: bool = False,
 ) -> list[Path]:
     channel = channel_id.strip().lower()
     package = package_name(channel)
@@ -109,6 +163,17 @@ def create_adapter_scaffold(
         adapter_dir / "adapter.py": adapter_template(channel, name, country.upper()),
         test_path: test_template(channel),
     }
+    if with_fixtures:
+        fixture_dir = project_root / "tests" / "fixtures" / package
+        files.update(
+            {
+                fixture_dir / "catalog.sample.json": fixture_catalog_template(channel),
+                fixture_dir / "price.sample.json": fixture_price_template(channel),
+                project_root / "tests" / f"test_{package}_fixtures.py": fixture_test_template(
+                    channel
+                ),
+            }
+        )
     for path, content in files.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8", newline="\n")

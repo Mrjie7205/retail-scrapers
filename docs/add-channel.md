@@ -20,7 +20,8 @@ Generate a starter adapter package:
 ```bash
 retail-scrape scaffold example-shop-us \
   --display-name "Example Shop US" \
-  --country US
+  --country US \
+  --with-fixtures
 ```
 
 This creates:
@@ -30,6 +31,10 @@ src/retail_scrapers/adapters/example_shop_us/
 ├─ __init__.py
 └─ adapter.py
 tests/test_example_shop_us_adapter.py
+tests/test_example_shop_us_fixtures.py
+tests/fixtures/example_shop_us/
+├─ catalog.sample.json
+└─ price.sample.json
 ```
 
 Implement the two `ChannelAdapter` methods:
@@ -58,6 +63,8 @@ Unit tests should not depend on live retail websites. Add minimal sanitized fixt
 - Price and currency parsing.
 - Pagination and duplicate detection.
 - Empty and malformed responses.
+
+If you used `--with-fixtures`, replace the synthetic `example.com` payloads with tiny sanitized samples from the public source. Keep fixtures small enough to review in a pull request.
 
 Live website checks should live in the manual smoke workflow so every pull request does not hit retailer websites.
 

@@ -7,7 +7,7 @@ Retail Scrapers is intentionally small: it should stay focused on reliable extra
 - Publish the first PyPI release.
 - Add a generated channel health table that can ingest manual smoke-test artifacts.
 - Add more offline parser fixtures for each built-in adapter.
-- Expand the adapter scaffold command with optional fixture templates.
+- Expand the adapter scaffold command with optional parser helper templates.
 - Add more first-run diagnostics to `retail-scrape doctor`.
 - Improve examples for catalog extraction, price extraction, and downstream storage.
 

@@ -37,6 +37,7 @@ def _parser() -> argparse.ArgumentParser:
     scaffold.add_argument("channel_id")
     scaffold.add_argument("--display-name")
     scaffold.add_argument("--country", default="XX")
+    scaffold.add_argument("--with-fixtures", action="store_true")
 
     catalog = sub.add_parser("catalog", help="抓取渠道商品目录")
     catalog.add_argument("--channel", required=True)
@@ -103,6 +104,7 @@ def main(argv: list[str] | None = None) -> int:
                 args.channel_id,
                 display_name=args.display_name,
                 country=args.country,
+                with_fixtures=args.with_fixtures,
             )
             print(
                 json.dumps(

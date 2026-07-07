@@ -45,3 +45,18 @@ def test_create_adapter_scaffold_refuses_overwrite(tmp_path: Path):
 
     with pytest.raises(FileExistsError, match="already exists"):
         create_adapter_scaffold("example-shop-us", root=tmp_path)
+
+
+def test_create_adapter_scaffold_with_fixtures(tmp_path: Path):
+    created = create_adapter_scaffold("example-shop-us", root=tmp_path, with_fixtures=True)
+    relative = {path.relative_to(tmp_path).as_posix() for path in created}
+
+    assert "tests/fixtures/example_shop_us/catalog.sample.json" in relative
+    assert "tests/fixtures/example_shop_us/price.sample.json" in relative
+    assert "tests/test_example_shop_us_fixtures.py" in relative
+
+    fixture = (tmp_path / "tests/fixtures/example_shop_us/catalog.sample.json").read_text(
+        encoding="utf-8"
+    )
+    assert '"channel": "example-shop-us"' in fixture
+    assert "example.com" in fixture

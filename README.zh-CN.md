@@ -151,10 +151,11 @@ for record in records:
 ```bash
 retail-scrape scaffold example-shop-us \
   --display-name "Example Shop US" \
-  --country US
+  --country US \
+  --with-fixtures
 ```
 
-这会生成 adapter 包和对应测试文件，让 fork 用户把精力放在提取逻辑上，而不是重复写样板代码。
+这会生成 adapter 包、身份测试，以及可选的脱敏 fixture 测试骨架，让 fork 用户把精力放在提取逻辑上，而不是重复写样板代码。
 
 - [架构说明](docs/架构说明.md)
 - [新增渠道指南](docs/新增渠道.md)

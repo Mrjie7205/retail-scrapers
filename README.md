@@ -151,10 +151,11 @@ Want to add another retailer? Start here:
 ```bash
 retail-scrape scaffold example-shop-us \
   --display-name "Example Shop US" \
-  --country US
+  --country US \
+  --with-fixtures
 ```
 
-This creates a starter adapter package and a matching test file, so a fork can focus on extraction logic instead of boilerplate.
+This creates a starter adapter package, a matching identity test, and optional sanitized fixture-test skeletons, so a fork can focus on extraction logic instead of boilerplate.
 
 - [Architecture](docs/architecture.md)
 - [Adding a channel](docs/add-channel.md)
