@@ -135,6 +135,16 @@ Common runtime controls:
 - `--retries`: retry attempts after the first request.
 - `--delay-seconds`: delay between retries, pages, or sequential product visits.
 
+## Run on GitHub Actions
+
+Forks can start from the copy-paste workflow in
+[`examples/github-actions/scheduled-scrape.yml`](examples/github-actions/scheduled-scrape.yml).
+It supports manual catalog runs, manual price runs, and a small scheduled smoke run that
+uploads output as a GitHub Actions artifact.
+
+See [Run scrapers on GitHub Actions](docs/automation.md) for setup notes and responsible
+automation boundaries.
+
 ## Python API
 
 ```python
@@ -169,6 +179,7 @@ This creates a starter adapter package, a matching identity test, and optional s
 - [API discovery playbook](docs/api-discovery-playbook.md)
 - [Channel health](docs/channel-health.md)
 - [Downstream usage](docs/downstream-usage.md)
+- [GitHub Actions automation](docs/automation.md)
 - [Roadmap](ROADMAP.md)
 - [Example output](examples/output.example.jsonl)
 

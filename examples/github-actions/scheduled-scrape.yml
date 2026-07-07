@@ -1,0 +1,105 @@
+name: Retail Scrapers scheduled run
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "Retail Scrapers channel ID"
+        required: true
+        default: "elkjop-no"
+        type: choice
+        options:
+          - elkjop-no
+          - boulanger-fr
+          - currys-gb
+          - amazon-de
+      mode:
+        description: "Run catalog extraction or price extraction"
+        required: true
+        default: "catalog"
+        type: choice
+        options:
+          - catalog
+          - prices
+      max_items:
+        description: "Small smoke limit for catalog runs; remove or raise for production"
+        required: true
+        default: "20"
+      input_file:
+        description: "CSV file with id,url columns for price runs"
+        required: true
+        default: "examples/products.example.csv"
+      no_strict:
+        description: "Use --no-strict for exploration and smoke tests"
+        required: true
+        default: true
+        type: boolean
+
+  # Safe default: one small scheduled smoke run per day.
+  # Tune the cron, channel, max_items, and strictness for your own use case.
+  schedule:
+    - cron: "17 5 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package and browser
+        run: |
+          python -m pip install .
+          python -m playwright install --with-deps chromium
+
+      - name: Run scraper
+        env:
+          INPUT_CHANNEL: ${{ github.event.inputs.channel }}
+          INPUT_MODE: ${{ github.event.inputs.mode }}
+          INPUT_MAX_ITEMS: ${{ github.event.inputs.max_items }}
+          INPUT_FILE: ${{ github.event.inputs.input_file }}
+          INPUT_NO_STRICT: ${{ github.event.inputs.no_strict }}
+        run: |
+          set -euo pipefail
+
+          channel="${INPUT_CHANNEL:-elkjop-no}"
+          mode="${INPUT_MODE:-catalog}"
+          max_items="${INPUT_MAX_ITEMS:-20}"
+          input_file="${INPUT_FILE:-examples/products.example.csv}"
+          strict_flag=""
+
+          if [ "${INPUT_NO_STRICT:-true}" = "true" ]; then
+            strict_flag="--no-strict"
+          fi
+
+          mkdir -p output
+
+          if [ "$mode" = "catalog" ]; then
+            retail-scrape catalog \
+              --channel "$channel" \
+              --max-items "$max_items" \
+              --output "output/${channel}-catalog.jsonl" \
+              $strict_flag
+          else
+            retail-scrape prices \
+              --channel "$channel" \
+              --input "$input_file" \
+              --output "output/${channel}-prices.jsonl" \
+              $strict_flag
+          fi
+
+      - name: Upload scrape output
+        uses: actions/upload-artifact@v4
+        with:
+          name: retail-scrape-output-${{ github.run_id }}
+          path: output/*
+          retention-days: 14

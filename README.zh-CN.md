@@ -135,6 +135,14 @@ product-2,https://www.example.com/product/2
 - `--retries`：首次请求失败后的重试次数。
 - `--delay-seconds`：重试、翻页或顺序访问商品之间的等待秒数。
 
+## 用 GitHub Actions 运行
+
+fork 用户可以从
+[`examples/github-actions/scheduled-scrape.yml`](examples/github-actions/scheduled-scrape.yml)
+这份可复制 workflow 开始。它支持手动 catalog 抓取、手动价格抓取，以及一个小规模的定时 smoke run，结果会上传为 GitHub Actions artifact。
+
+配置方式和自动化使用边界见：[用 GitHub Actions 定时运行爬虫](docs/automation.zh-CN.md)。
+
 ## Python 用法
 
 ```python
@@ -169,6 +177,7 @@ retail-scrape scaffold example-shop-us \
 - [API 发现手册](docs/api-discovery-playbook.zh-CN.md)
 - [渠道健康状态](docs/channel-health.zh-CN.md)
 - [下游使用方式](docs/downstream-usage.zh-CN.md)
+- [GitHub Actions 自动化](docs/automation.zh-CN.md)
 - [Roadmap](ROADMAP.md)
 - [示例输出](examples/output.example.jsonl)
 

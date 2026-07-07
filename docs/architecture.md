@@ -34,6 +34,10 @@ retail-scrape schema
 retail-scrape schema catalog --format markdown
 ```
 
+For unattended runs, start from the copy-paste workflow template in
+`examples/github-actions/scheduled-scrape.yml`. It uploads output as an artifact by
+default so this package stays focused on extraction rather than storage.
+
 ## Directory responsibilities
 
 - `core/`: shared browser and price-parsing utilities.
