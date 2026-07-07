@@ -1,52 +1,53 @@
 # Retail Scrapers
 
-Retail Scrapers 是一个面向真实零售网站的 Python 抓取工具箱。它提供可直接运行的渠道适配器，
-负责提取商品目录和当前价格，并把结果输出为统一的 CSV 或 JSONL。
+[中文文档](README.zh-CN.md)
 
-项目只负责“可靠地拿到结构化数据”。数据库、价格趋势、汇率换算、商品匹配、告警和可视化由使用者
-自行决定。
+A lightweight Python toolkit for extracting product catalogs and current prices from real retail websites.
 
-## 核心特点
+Retail Scrapers focuses on one job: turning public retail pages and frontend APIs into structured records. It does not include a database, price-history system, currency conversion layer, product matching logic, alerting, or dashboards. Those downstream choices are intentionally left to the user.
 
-- API 优先：优先复用零售网站前端公开调用的数据接口。
-- 浏览器兜底：需要渲染页面时使用 Playwright。
-- 渠道隔离：每个渠道是独立 adapter，共享请求、校验和输出能力。
-- 严格检查：支持数量、分页、SKU 去重和价格任务成功率校验。
-- 无内置数据：仓库不保存用户抓取结果、账号、Cookie 或业务映射表。
+## What it does
 
-## 内置渠道
+- API-first extraction: reuse public frontend data calls when a retailer exposes them.
+- Browser fallback: use Playwright when a page needs rendering or session setup.
+- Channel isolation: each retailer lives in its own adapter.
+- Shared output format: catalog and price records can be written as JSONL or CSV.
+- Validation built in: check catalog completeness, duplicated SKUs, and price-run success rate.
+- No bundled scraped data: the repository does not store user results, accounts, cookies, sessions, or private business mapping tables.
 
-| 渠道 ID | 国家 | 目录 | 价格 | 主要策略 |
+## Supported channels
+
+| Channel ID | Market | Catalog | Price | Main strategy |
 |---|---|---:|---:|---|
-| `amazon-de` | 德国 | ✓ | ✓ | Playwright、配送地会话、EUR 校验 |
-| `boulanger-fr` | 法国 | ✓ | ✓ | 品牌 facet、懒加载、Schema.org |
-| `currys-gb` | 英国 | ✓ | ✓ | 独立分页会话、Schema.org |
-| `elkjop-no` | 挪威 | ✓ | ✓ | Algolia 目录、tRPC 价格、页面兜底 |
+| `amazon-de` | Germany | Yes | Yes | Playwright, delivery-location session, EUR validation |
+| `boulanger-fr` | France | Yes | Yes | Brand facets, HTML parsing, Schema.org fallback |
+| `currys-gb` | United Kingdom | Yes | Yes | Isolated page sessions, Schema.org fallback |
+| `elkjop-no` | Norway | Yes | Yes | Algolia catalog API, tRPC price API, page fallback |
 
-网站会持续改版，因此 adapter 是否可用应以最近一次测试和运行日志为准。
+Retail websites change frequently. Treat the latest run log or live smoke test as the source of truth for whether an adapter is currently healthy.
 
-## 安装
+## Installation
 
 ```bash
 python -m pip install -e .
 python -m playwright install chromium
 ```
 
-开发环境：
+For development:
 
 ```bash
 python -m pip install -e ".[dev]"
 ```
 
-## 命令行使用
+## CLI usage
 
-查看支持的渠道：
+List available channels:
 
 ```bash
 retail-scrape channels
 ```
 
-抓取 Elkjøp 指定年份的完整电视目录：
+Scrape an Elkjøp TV catalog for selected years:
 
 ```bash
 retail-scrape catalog \
@@ -56,7 +57,7 @@ retail-scrape catalog \
   --output output/elkjop.jsonl
 ```
 
-按品牌抓取 Amazon Germany 搜索目录：
+Scrape an Amazon Germany search catalog by brand:
 
 ```bash
 retail-scrape catalog \
@@ -68,7 +69,7 @@ retail-scrape catalog \
   --format csv
 ```
 
-按 URL 清单抓价格：
+Scrape prices from a URL list:
 
 ```bash
 retail-scrape prices \
@@ -77,7 +78,7 @@ retail-scrape prices \
   --output output/prices.jsonl
 ```
 
-输入文件至少包含 `id` 和 `url`：
+The input file must contain at least `id` and `url`:
 
 ```csv
 id,url
@@ -85,10 +86,15 @@ product-1,https://www.example.com/product/1
 product-2,https://www.example.com/product/2
 ```
 
-默认启用严格模式。价格成功率低于 80%，或支持总量校验的目录出现缺页时，命令返回非零退出码。
-探索或排障时可使用 `--no-strict`。
+Strict mode is enabled by default. The command exits with a non-zero status if the price success rate is below 80%, or if a catalog adapter that supports total-count validation detects missing pages. Use `--no-strict` for exploration and debugging.
 
-## Python 使用
+Common runtime controls:
+
+- `--timeout-ms`: request or page-navigation timeout in milliseconds.
+- `--retries`: retry attempts after the first request.
+- `--delay-seconds`: delay between retries, pages, or sequential product visits.
+
+## Python API
 
 ```python
 from retail_scrapers import scrape_catalog
@@ -102,22 +108,20 @@ for record in records:
     print(record.sku, record.price, record.currency)
 ```
 
-异步应用可使用 `retail_scrapers.runner` 中的 `scrape_catalog_async` 和
-`scrape_prices_async`。
+Async applications can use `scrape_catalog_async` and `scrape_prices_async` from `retail_scrapers.runner`.
 
-## 输出原则
+## Output principles
 
-- 保留网站原始币种，不默认换算汇率。
-- 不替用户匹配内部商品主数据。
-- 不持久化 Cookie、会话或抓取结果。
-- `metadata` 只保存渠道公开返回的辅助字段。
+- Preserve the retailer's native currency; no default currency conversion.
+- Do not match products to a user's internal master-data model.
+- Do not persist cookies, sessions, or scrape results inside the package.
+- Keep `metadata` limited to helpful public fields returned by the retailer.
 
-## 使用边界
+## Responsible use
 
-使用者应自行确认目标网站的服务条款、robots 规则和所在地区法律要求。请控制请求频率，不访问需要
-登录或授权的数据，不采集个人信息，也不要使用本项目破坏网站服务。
+Users are responsible for checking each target website's terms of service, robots rules, and applicable laws. Keep request rates reasonable, do not access data that requires login or authorization, do not collect personal information, and do not use this project to disrupt website services.
 
-## 开发
+## Development
 
 ```bash
 ruff check .
@@ -125,9 +129,8 @@ pytest
 mypy src/retail_scrapers
 ```
 
-新增渠道请阅读 [新增渠道指南](docs/新增渠道.md)。整体设计见
-[架构说明](docs/架构说明.md)。
+For adapter design, see [docs/architecture.md](docs/architecture.md). For adding a new channel, see [docs/add-channel.md](docs/add-channel.md).
 
-## 许可证
+## License
 
 MIT

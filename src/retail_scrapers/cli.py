@@ -30,6 +30,9 @@ def _parser() -> argparse.ArgumentParser:
     catalog.add_argument("--max-pages", type=int)
     catalog.add_argument("--max-items", type=int)
     catalog.add_argument("--postal-code")
+    catalog.add_argument("--timeout-ms", type=int, default=60_000)
+    catalog.add_argument("--retries", type=int, default=2)
+    catalog.add_argument("--delay-seconds", type=float, default=1.0)
     catalog.add_argument("--output", "-o")
     catalog.add_argument("--format", choices=("jsonl", "csv"), default="jsonl")
     catalog.add_argument("--no-strict", action="store_true")
@@ -43,6 +46,9 @@ def _parser() -> argparse.ArgumentParser:
     prices.add_argument("--concurrency", type=int, default=3)
     prices.add_argument("--min-success-rate", type=float, default=0.8)
     prices.add_argument("--postal-code")
+    prices.add_argument("--timeout-ms", type=int, default=60_000)
+    prices.add_argument("--retries", type=int, default=2)
+    prices.add_argument("--delay-seconds", type=float, default=1.0)
     prices.add_argument("--no-strict", action="store_true")
     prices.add_argument("--headed", action="store_true")
     return parser
@@ -73,6 +79,9 @@ def main(argv: list[str] | None = None) -> int:
                 strict=not args.no_strict,
                 headless=not args.headed,
                 postal_code=args.postal_code,
+                timeout_ms=args.timeout_ms,
+                retries=args.retries,
+                delay_seconds=args.delay_seconds,
             )
         else:
             records = scrape_prices(
@@ -83,6 +92,9 @@ def main(argv: list[str] | None = None) -> int:
                 strict=not args.no_strict,
                 headless=not args.headed,
                 postal_code=args.postal_code,
+                timeout_ms=args.timeout_ms,
+                retries=args.retries,
+                delay_seconds=args.delay_seconds,
             )
         write_records(records, output=args.output, output_format=args.format)
         return 0

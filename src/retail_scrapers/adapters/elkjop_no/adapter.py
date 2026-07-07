@@ -61,14 +61,14 @@ class ElkjopNoAdapter(ChannelAdapter):
     display_name = "Elkjøp Norway"
     country = "NO"
 
-    async def _signed_key(self, request) -> str:
+    async def _signed_key(self, request, options: CatalogOptions) -> str:
         last_error = ""
-        for attempt in range(3):
+        for attempt in range(options.retries + 1):
             try:
                 response = await request.get(
                     SIGNED_KEY_URL,
                     headers={"accept": "application/json", "referer": HOME_URL},
-                    timeout=30_000,
+                    timeout=options.timeout_ms,
                 )
                 if response.ok:
                     key = str((await response.json()).get("apiKey") or "")
@@ -77,7 +77,8 @@ class ElkjopNoAdapter(ChannelAdapter):
                 last_error = f"HTTP {response.status}"
             except Exception as exc:
                 last_error = str(exc)
-            await asyncio.sleep(attempt + 1)
+            if attempt < options.retries:
+                await asyncio.sleep(options.delay_seconds * (attempt + 1))
         raise ExtractionError(f"无法获取Elkjøp搜索凭据: {last_error[:120]}")
 
     @staticmethod
@@ -119,7 +120,7 @@ class ElkjopNoAdapter(ChannelAdapter):
 
     async def _query(self, request, key: str, options: CatalogOptions, year, page) -> dict:
         last_error = ""
-        for attempt in range(3):
+        for attempt in range(options.retries + 1):
             try:
                 response = await request.post(
                     ALGOLIA_URL,
@@ -129,7 +130,7 @@ class ElkjopNoAdapter(ChannelAdapter):
                         "x-algolia-api-key": key,
                     },
                     data=json.dumps(self._payload(options, year, page)),
-                    timeout=30_000,
+                    timeout=options.timeout_ms,
                 )
                 if response.ok:
                     results = (await response.json()).get("results") or []
@@ -138,7 +139,8 @@ class ElkjopNoAdapter(ChannelAdapter):
                 last_error = f"HTTP {response.status}"
             except Exception as exc:
                 last_error = str(exc)
-            await asyncio.sleep(attempt + 1)
+            if attempt < options.retries:
+                await asyncio.sleep(options.delay_seconds * (attempt + 1))
         raise ExtractionError(f"Elkjøp目录API失败: {last_error[:120]}")
 
     async def scrape_catalog(
@@ -148,7 +150,7 @@ class ElkjopNoAdapter(ChannelAdapter):
     ) -> Sequence[CatalogRecord]:
         request = await runtime.new_request_context(locale="nb-NO", referer=HOME_URL)
         try:
-            key = await self._signed_key(request)
+            key = await self._signed_key(request, options)
             groups: list[int | None] = list(options.years) if options.years else [None]
             by_sku: dict[str, CatalogRecord] = {}
 
@@ -226,7 +228,11 @@ class ElkjopNoAdapter(ChannelAdapter):
             await request.dispose()
 
     @staticmethod
-    async def _direct_price(request, target: PriceTarget) -> PriceRecord:
+    async def _direct_price(
+        request,
+        target: PriceTarget,
+        options: PriceOptions,
+    ) -> PriceRecord:
         match = SKU_RE.search(target.url)
         if not match:
             return PriceRecord(
@@ -244,7 +250,7 @@ class ElkjopNoAdapter(ChannelAdapter):
         response = await request.get(
             f"{PRICE_API}?batch=1&input={quote(payload, safe='')}",
             headers={"accept": "application/json", "referer": target.url},
-            timeout=30_000,
+            timeout=options.timeout_ms,
         )
         if not response.ok:
             raise ExtractionError(f"Elkjøp价格API HTTP {response.status}")
@@ -273,11 +279,12 @@ class ElkjopNoAdapter(ChannelAdapter):
         self,
         runtime: BrowserRuntime,
         target: PriceTarget,
+        options: PriceOptions,
     ) -> PriceRecord:
         context = await runtime.new_context(locale="nb-NO", timezone_id="Europe/Oslo")
         page = await context.new_page()
         try:
-            await page.goto(target.url, wait_until="domcontentloaded", timeout=60_000)
+            await page.goto(target.url, wait_until="domcontentloaded", timeout=options.timeout_ms)
             parsed = await price_from_schema(page)
             if not parsed or parsed[1] != "NOK":
                 raise ExtractionError("商品页没有找到NOK价格")
@@ -306,26 +313,31 @@ class ElkjopNoAdapter(ChannelAdapter):
 
         async def one(target: PriceTarget) -> PriceRecord:
             async with semaphore:
-                try:
-                    return await self._direct_price(request, target)
-                except Exception as api_error:
+                api_error: Exception | None = None
+                for attempt in range(options.retries + 1):
                     try:
-                        return await self._page_fallback(runtime, target)
-                    except Exception as page_error:
-                        return PriceRecord(
-                            channel=self.channel_id,
-                            country=self.country,
-                            id=target.id,
-                            url=target.url,
-                            price=None,
-                            currency="",
-                            status="failed",
-                            metadata={
-                                **target.metadata,
-                                "api_error": str(api_error)[:160],
-                                "page_error": str(page_error)[:160],
-                            },
-                        )
+                        return await self._direct_price(request, target, options)
+                    except Exception as exc:
+                        api_error = exc
+                        if attempt < options.retries:
+                            await asyncio.sleep(options.delay_seconds * (attempt + 1))
+                try:
+                    return await self._page_fallback(runtime, target, options)
+                except Exception as page_error:
+                    return PriceRecord(
+                        channel=self.channel_id,
+                        country=self.country,
+                        id=target.id,
+                        url=target.url,
+                        price=None,
+                        currency="",
+                        status="failed",
+                        metadata={
+                            **target.metadata,
+                            "api_error": str(api_error)[:160],
+                            "page_error": str(page_error)[:160],
+                        },
+                    )
 
         try:
             return await asyncio.gather(*(one(target) for target in targets))

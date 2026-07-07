@@ -64,16 +64,23 @@ class CurrysGbAdapter(ChannelAdapter):
     display_name = "Currys Great Britain"
     country = "GB"
 
-    async def _page(self, runtime: BrowserRuntime, start: int) -> tuple[list[dict], int | None]:
+    async def _page(
+        self,
+        runtime: BrowserRuntime,
+        options: CatalogOptions,
+        start: int,
+    ) -> tuple[list[dict], int | None]:
         """Currys同一会话连续翻页容易403，因此每页使用独立context。"""
         context = await runtime.new_context(locale="en-GB", timezone_id="Europe/London")
         page = await context.new_page()
         try:
             url = f"{CATEGORY_URL}?start={start}&sz={PAGE_SIZE}"
-            response = await page.goto(url, wait_until="domcontentloaded", timeout=50_000)
+            response = await page.goto(
+                url, wait_until="domcontentloaded", timeout=options.timeout_ms
+            )
             if not response or response.status != 200:
                 raise ExtractionError(f"Currys目录页HTTP {response.status if response else 0}")
-            await page.wait_for_timeout(2_000)
+            await page.wait_for_timeout(int(options.delay_seconds * 1000))
             rows = await page.evaluate(EXTRACT_JS)
             body = await page.locator("body").inner_text()
             match = TOTAL_RE.search(body)
@@ -95,14 +102,19 @@ class CurrysGbAdapter(ChannelAdapter):
             rows: list[dict] = []
             page_expected = None
             last_error = None
-            for attempt in range(2):
+            for attempt in range(options.retries + 1):
                 try:
-                    rows, page_expected = await self._page(runtime, page_index * PAGE_SIZE)
+                    rows, page_expected = await self._page(
+                        runtime,
+                        options,
+                        page_index * PAGE_SIZE,
+                    )
                     last_error = None
                     break
                 except Exception as exc:
                     last_error = exc
-                    await asyncio.sleep(attempt + 1)
+                    if attempt < options.retries:
+                        await asyncio.sleep(options.delay_seconds * (attempt + 1))
             if last_error:
                 raise ExtractionError(f"Currys分页失败: {last_error}")
             if page_expected is not None:
@@ -129,7 +141,7 @@ class CurrysGbAdapter(ChannelAdapter):
                 break
             if page_index > 0 and added == 0 and not options.brands:
                 break
-            await asyncio.sleep(1)
+            await asyncio.sleep(options.delay_seconds)
 
         records = []
         for slug, row in by_slug.items():
@@ -171,7 +183,7 @@ class CurrysGbAdapter(ChannelAdapter):
                     response = await page.goto(
                         target.url,
                         wait_until="domcontentloaded",
-                        timeout=60_000,
+                        timeout=options.timeout_ms,
                     )
                     if not response or response.status >= 400:
                         raise ExtractionError(f"HTTP {response.status if response else 0}")

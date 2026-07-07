@@ -1,13 +1,15 @@
-# 贡献指南
+# Contributing
 
-欢迎修复现有渠道或增加新的零售渠道。
+[中文文档](CONTRIBUTING.zh-CN.md)
 
-提交前请：
+Contributions are welcome, especially fixes for existing adapters and new public retail channels.
 
-1. 先创建 Issue，说明渠道、国家、目录入口和建议方案。
-2. 将网站特定逻辑限制在独立 adapter 中。
-3. 为解析逻辑添加离线 fixture 测试。
-4. 不提交抓取结果、凭据、Cookie、个人信息或企业内部数据。
-5. 运行 `ruff check .`、`pytest` 和 `mypy src/retail_scrapers`。
+Before opening a pull request:
 
-真实网站可能限制自动访问。贡献者需要遵守目标网站条款，并使用合理的请求频率。
+1. Open an issue describing the channel, market, catalog entry point, and proposed extraction strategy.
+2. Keep retailer-specific logic inside a dedicated adapter.
+3. Add offline fixture tests for parser behavior.
+4. Do not commit scraped results, credentials, cookies, personal information, or internal business data.
+5. Run `ruff check .`, `pytest`, and `mypy src/retail_scrapers`.
+
+Real retail websites may restrict automated access. Contributors are responsible for following the target site's terms and using reasonable request rates.

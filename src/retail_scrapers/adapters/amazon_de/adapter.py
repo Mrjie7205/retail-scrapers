@@ -51,7 +51,27 @@ PRICE_SELECTORS = (
 )
 
 
-async def _set_location(page, postal_code: str) -> bool:
+async def _goto(page, url: str, *, timeout_ms: int, retries: int, delay_seconds: float):
+    last_error: Exception | None = None
+    for attempt in range(retries + 1):
+        try:
+            return await page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
+        except Exception as exc:
+            last_error = exc
+            if attempt < retries:
+                await asyncio.sleep(delay_seconds * (attempt + 1))
+    if last_error:
+        raise last_error
+    return None
+
+
+async def _set_location(
+    page,
+    postal_code: str,
+    timeout_ms: int,
+    retries: int,
+    delay_seconds: float,
+) -> bool:
     """使用Amazon自身的地址变更接口设置德国配送邮编。"""
     await page.context.add_cookies(
         [
@@ -59,7 +79,13 @@ async def _set_location(page, postal_code: str) -> bool:
             {"name": "lc-acbde", "value": "de_DE", "domain": ".amazon.de", "path": "/"},
         ]
     )
-    await page.goto(BASE_URL, wait_until="domcontentloaded", timeout=45_000)
+    await _goto(
+        page,
+        BASE_URL,
+        timeout_ms=timeout_ms,
+        retries=retries,
+        delay_seconds=delay_seconds,
+    )
     for selector in ("#sp-cc-accept", "#sp-cc-accept input"):
         try:
             await page.click(selector, timeout=1_500)
@@ -143,7 +169,13 @@ class AmazonDeAdapter(ChannelAdapter):
         page = await context.new_page()
         try:
             postal_code = options.postal_code or DEFAULT_POSTAL_CODE
-            if not await _set_location(page, postal_code):
+            if not await _set_location(
+                page,
+                postal_code,
+                options.timeout_ms,
+                options.retries,
+                options.delay_seconds,
+            ):
                 raise ExtractionError("Amazon德国配送地设置失败，拒绝输出可能属于其他市场的数据")
 
             queries = options.brands or [""]
@@ -153,16 +185,18 @@ class AmazonDeAdapter(ChannelAdapter):
                 for page_number in range(1, max_pages + 1):
                     search_term = f"{query} fernseher".strip()
                     url = f"{BASE_URL}/s?k={quote_plus(search_term)}&page={page_number}"
-                    response = await page.goto(
+                    response = await _goto(
+                        page,
                         url,
-                        wait_until="domcontentloaded",
-                        timeout=45_000,
+                        timeout_ms=options.timeout_ms,
+                        retries=options.retries,
+                        delay_seconds=options.delay_seconds,
                     )
                     if not response or response.status >= 400:
                         raise ExtractionError(
                             f"Amazon搜索页HTTP {response.status if response else 0}"
                         )
-                    await page.wait_for_timeout(2_000)
+                    await page.wait_for_timeout(int(options.delay_seconds * 1000))
                     rows = await page.evaluate(EXTRACT_JS)
                     added = 0
                     for row in rows:
@@ -195,7 +229,7 @@ class AmazonDeAdapter(ChannelAdapter):
                         added += 1
                     if page_number > 1 and added == 0:
                         break
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(options.delay_seconds)
             records = list(by_asin.values())
             return records[: options.max_items] if options.max_items else records
         finally:
@@ -211,15 +245,23 @@ class AmazonDeAdapter(ChannelAdapter):
         page = await context.new_page()
         postal_code = options.postal_code or DEFAULT_POSTAL_CODE
         try:
-            if not await _set_location(page, postal_code):
+            if not await _set_location(
+                page,
+                postal_code,
+                options.timeout_ms,
+                options.retries,
+                options.delay_seconds,
+            ):
                 raise ExtractionError("Amazon德国配送地设置失败")
             records = []
             for target in targets:
                 try:
-                    response = await page.goto(
+                    response = await _goto(
+                        page,
                         target.url,
-                        wait_until="domcontentloaded",
-                        timeout=60_000,
+                        timeout_ms=options.timeout_ms,
+                        retries=options.retries,
+                        delay_seconds=options.delay_seconds,
                     )
                     if not response or response.status >= 400:
                         raise ExtractionError(f"HTTP {response.status if response else 0}")
@@ -252,7 +294,7 @@ class AmazonDeAdapter(ChannelAdapter):
                             metadata={**target.metadata, "error": str(exc)[:160]},
                         )
                     )
-                await asyncio.sleep(1)
+                await asyncio.sleep(options.delay_seconds)
             return records
         finally:
             await context.close()

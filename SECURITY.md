@@ -1,8 +1,9 @@
-# 安全说明
+# Security
 
-请不要在公开 Issue 中提交账号、Cookie、API 密钥、代理凭据或包含个人信息的页面样本。
+[中文文档](SECURITY.zh-CN.md)
 
-本项目只面向无需登录即可访问的公开商品信息。发现 adapter 意外访问授权数据时，请立即停止运行并
-提交不包含敏感内容的问题描述。
+Please do not post accounts, cookies, API keys, proxy credentials, or page samples containing personal information in public issues.
 
-短期会话凭据只能在运行时获取并保存在内存中，不得写入日志、fixture 或仓库。
+Retail Scrapers is intended only for public product information that does not require login. If an adapter unexpectedly accesses authenticated or restricted data, stop running it and report the issue without including sensitive content.
+
+Short-lived session credentials must be acquired at runtime and kept in memory. They must not be written to logs, fixtures, or the repository.

@@ -137,11 +137,22 @@ class BoulangerFrAdapter(ChannelAdapter):
             for selected_brand in brand_filters:
                 for page_number in range(1, max_pages + 1):
                     url = _catalog_url(selected_brand, page_number)
-                    response = await request.get(
-                        url,
-                        headers={"accept": "text/html"},
-                        timeout=30_000,
-                    )
+                    last_error = ""
+                    response = None
+                    for attempt in range(options.retries + 1):
+                        try:
+                            response = await request.get(
+                                url,
+                                headers={"accept": "text/html"},
+                                timeout=options.timeout_ms,
+                            )
+                            break
+                        except Exception as exc:
+                            last_error = str(exc)
+                            if attempt < options.retries:
+                                await asyncio.sleep(options.delay_seconds * (attempt + 1))
+                    if response is None:
+                        raise ExtractionError(f"Boulanger目录页请求失败: {last_error[:120]}")
                     if not response.ok:
                         raise ExtractionError(f"Boulanger目录页HTTP {response.status}: {url}")
                     extracted = self._rows_from_html(await response.text())
@@ -163,6 +174,7 @@ class BoulangerFrAdapter(ChannelAdapter):
                             by_url[canonical]["prices"].append(row["price"])
                     if page_number > 1 and added == 0:
                         break
+                    await asyncio.sleep(options.delay_seconds)
 
             records = []
             for url, row in by_url.items():
@@ -201,12 +213,19 @@ class BoulangerFrAdapter(ChannelAdapter):
         async def one(target: PriceTarget) -> PriceRecord:
             async with semaphore:
                 try:
-                    response = await request.get(
-                        target.url,
-                        headers={"accept": "text/html"},
-                        timeout=30_000,
-                    )
-                    if response.ok:
+                    response = None
+                    for attempt in range(options.retries + 1):
+                        try:
+                            response = await request.get(
+                                target.url,
+                                headers={"accept": "text/html"},
+                                timeout=options.timeout_ms,
+                            )
+                            break
+                        except Exception:
+                            if attempt < options.retries:
+                                await asyncio.sleep(options.delay_seconds * (attempt + 1))
+                    if response and response.ok:
                         parsed = self._price_from_html(await response.text())
                         if parsed and parsed[1] == "EUR":
                             return PriceRecord(
@@ -228,7 +247,7 @@ class BoulangerFrAdapter(ChannelAdapter):
                     response = await page.goto(
                         target.url,
                         wait_until="domcontentloaded",
-                        timeout=60_000,
+                        timeout=options.timeout_ms,
                     )
                     if not response or response.status >= 400:
                         raise ExtractionError(f"HTTP {response.status if response else 0}")

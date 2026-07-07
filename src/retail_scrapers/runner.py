@@ -22,6 +22,9 @@ async def scrape_catalog_async(
     strict: bool = True,
     headless: bool = True,
     postal_code: str | None = None,
+    timeout_ms: int = 60_000,
+    retries: int = 2,
+    delay_seconds: float = 1.0,
 ) -> list[CatalogRecord]:
     adapter = get_adapter(channel)
     options = CatalogOptions(
@@ -32,6 +35,9 @@ async def scrape_catalog_async(
         strict=strict,
         headless=headless,
         postal_code=postal_code,
+        timeout_ms=timeout_ms,
+        retries=retries,
+        delay_seconds=delay_seconds,
     )
     async with BrowserRuntime(headless=headless) as runtime:
         records = list(await adapter.scrape_catalog(runtime, options))
@@ -51,6 +57,9 @@ async def scrape_prices_async(
     strict: bool = True,
     headless: bool = True,
     postal_code: str | None = None,
+    timeout_ms: int = 60_000,
+    retries: int = 2,
+    delay_seconds: float = 1.0,
 ) -> list[PriceRecord]:
     adapter = get_adapter(channel)
     options = PriceOptions(
@@ -59,6 +68,9 @@ async def scrape_prices_async(
         strict=strict,
         headless=headless,
         postal_code=postal_code,
+        timeout_ms=timeout_ms,
+        retries=retries,
+        delay_seconds=delay_seconds,
     )
     async with BrowserRuntime(headless=headless) as runtime:
         records = list(await adapter.scrape_prices(runtime, targets, options))
