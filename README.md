@@ -13,6 +13,31 @@ API-first product catalog and price extraction for real retail websites.
 
 Retail Scrapers focuses on one job: turning public retail pages and frontend APIs into structured records. It does not include a database, price-history system, currency conversion layer, product matching logic, alerting, or dashboards. Those downstream choices are intentionally left to the user.
 
+## Why fork this instead of writing one-off scripts?
+
+Use Retail Scrapers when you want a reusable scraping foundation instead of a pile of
+retailer-specific scripts that slowly drift apart.
+
+| One-off scraper | Retail Scrapers |
+|---|---|
+| Hidden assumptions in each script | Shared records, validation, runtime options, and CLI behavior |
+| Live websites hit from every test | Offline fixture tests first; live smoke checks are manual |
+| Hard to tell partial failure from success | Strict mode fails when output is incomplete |
+| Data storage mixed into extraction | Extraction-only package; your pipeline owns storage and matching |
+| New retailer starts from a blank file | `retail-scrape scaffold --with-fixtures` creates the adapter path |
+
+Good fit for:
+
+- Forks that need catalog or price data from multiple public retail websites.
+- Teams building their own price-history, alerting, matching, or analytics layer.
+- Developers who want a tested adapter pattern for real-world ecommerce pages.
+
+Not a fit for:
+
+- Scraping private, logged-in, or personal data.
+- High-volume crawling without reviewing the target site's acceptable-use rules.
+- A turnkey dashboard or database product.
+
 ## 30-second demo
 
 ```bash
