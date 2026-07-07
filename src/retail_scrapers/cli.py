@@ -10,6 +10,7 @@ from typing import Any
 
 from .doctor import run_doctor
 from .errors import ScraperError
+from .health import list_channel_health
 from .input import read_targets
 from .output import write_records
 from .registry import list_channels
@@ -25,6 +26,8 @@ def _parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("channels", help="列出支持的渠道")
+
+    sub.add_parser("health", help="显示内置渠道的能力和维护状态")
 
     doctor = sub.add_parser("doctor", help="检查本地运行环境")
     doctor.add_argument("--skip-browser", action="store_true")
@@ -78,6 +81,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "channels":
             print(json.dumps(list_channels(), ensure_ascii=False, indent=2))
+            return 0
+
+        if args.command == "health":
+            print(json.dumps(list_channel_health(), ensure_ascii=False, indent=2))
             return 0
 
         if args.command == "doctor":

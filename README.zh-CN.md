@@ -44,6 +44,12 @@ retail-scrape catalog \
 
 ## 已支持渠道
 
+维护细节见 [渠道健康状态](docs/channel-health.zh-CN.md)，也可以运行：
+
+```bash
+retail-scrape health
+```
+
 | 渠道 ID | 市场 | 目录 | 价格 | 主要策略 |
 |---|---|---:|---:|---|
 | `amazon-de` | 德国 | 是 | 是 | Playwright、配送地会话、EUR 校验 |
@@ -152,6 +158,7 @@ retail-scrape scaffold example-shop-us \
 - [架构说明](docs/架构说明.md)
 - [新增渠道指南](docs/新增渠道.md)
 - [API 发现手册](docs/api-discovery-playbook.zh-CN.md)
+- [渠道健康状态](docs/channel-health.zh-CN.md)
 - [Roadmap](ROADMAP.md)
 - [示例输出](examples/output.example.jsonl)
 

@@ -16,6 +16,17 @@ def test_channels_command(capsys):
     }
 
 
+def test_health_command(capsys):
+    assert main(["health"]) == 0
+    rows = json.loads(capsys.readouterr().out)
+    assert {row["channel"] for row in rows} == {
+        "amazon-de",
+        "boulanger-fr",
+        "currys-gb",
+        "elkjop-no",
+    }
+
+
 def test_runtime_options_are_validated(capsys):
     assert main(["catalog", "--channel", "elkjop-no", "--timeout-ms", "0"]) == 1
     assert "timeout_ms" in capsys.readouterr().err

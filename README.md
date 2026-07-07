@@ -44,6 +44,12 @@ Most scraper examples stop at "grab a page and parse some text." Real retail web
 
 ## Supported channels
 
+For maintenance details, see [Channel health](docs/channel-health.md), or run:
+
+```bash
+retail-scrape health
+```
+
 | Channel ID | Market | Catalog | Price | Main strategy |
 |---|---|---:|---:|---|
 | `amazon-de` | Germany | Yes | Yes | Playwright, delivery-location session, EUR validation |
@@ -152,6 +158,7 @@ This creates a starter adapter package and a matching test file, so a fork can f
 - [Architecture](docs/architecture.md)
 - [Adding a channel](docs/add-channel.md)
 - [API discovery playbook](docs/api-discovery-playbook.md)
+- [Channel health](docs/channel-health.md)
 - [Roadmap](ROADMAP.md)
 - [Example output](examples/output.example.jsonl)
 

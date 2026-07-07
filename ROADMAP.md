@@ -5,7 +5,7 @@ Retail Scrapers is intentionally small: it should stay focused on reliable extra
 ## Near term
 
 - Publish the first PyPI release.
-- Add a channel health table that summarizes the latest manual smoke-test status.
+- Add a generated channel health table that can ingest manual smoke-test artifacts.
 - Add more offline parser fixtures for each built-in adapter.
 - Expand the adapter scaffold command with optional fixture templates.
 - Add more first-run diagnostics to `retail-scrape doctor`.
