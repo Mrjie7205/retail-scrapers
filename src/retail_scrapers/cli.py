@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import sys
 from typing import Any
 
+from .doctor import run_doctor
 from .errors import ScraperError
 from .input import read_targets
 from .output import write_records
@@ -23,6 +25,9 @@ def _parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("channels", help="列出支持的渠道")
+
+    doctor = sub.add_parser("doctor", help="检查本地运行环境")
+    doctor.add_argument("--skip-browser", action="store_true")
 
     scaffold = sub.add_parser("scaffold", help="生成新渠道adapter骨架")
     scaffold.add_argument("channel_id")
@@ -74,6 +79,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "channels":
             print(json.dumps(list_channels(), ensure_ascii=False, indent=2))
             return 0
+
+        if args.command == "doctor":
+            report = asyncio.run(run_doctor(check_browser=not args.skip_browser))
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+            return 1 if report["status"] == "error" else 0
 
         if args.command == "scaffold":
             paths = create_adapter_scaffold(

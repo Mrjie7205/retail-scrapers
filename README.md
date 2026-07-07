@@ -151,6 +151,7 @@ This creates a starter adapter package and a matching test file, so a fork can f
 
 - [Architecture](docs/architecture.md)
 - [Adding a channel](docs/add-channel.md)
+- [API discovery playbook](docs/api-discovery-playbook.md)
 - [Roadmap](ROADMAP.md)
 - [Example output](examples/output.example.jsonl)
 
@@ -173,6 +174,12 @@ Users are responsible for checking each target website's terms of service, robot
 ruff check .
 pytest
 mypy src/retail_scrapers
+```
+
+Before running a live scrape, check your local environment:
+
+```bash
+retail-scrape doctor
 ```
 
 ## License

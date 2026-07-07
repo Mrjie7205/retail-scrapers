@@ -2,6 +2,8 @@
 
 ## 1. Confirm the data source
 
+For a fuller walkthrough, read the [API discovery playbook](api-discovery-playbook.md).
+
 Check sources in this order:
 
 1. JSON-LD or product metadata already embedded in the page.

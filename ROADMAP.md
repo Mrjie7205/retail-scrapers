@@ -8,6 +8,7 @@ Retail Scrapers is intentionally small: it should stay focused on reliable extra
 - Add a channel health table that summarizes the latest manual smoke-test status.
 - Add more offline parser fixtures for each built-in adapter.
 - Expand the adapter scaffold command with optional fixture templates.
+- Add more first-run diagnostics to `retail-scrape doctor`.
 - Improve examples for catalog extraction, price extraction, and downstream storage.
 
 ## Adapter quality
@@ -20,7 +21,7 @@ Retail Scrapers is intentionally small: it should stay focused on reliable extra
 ## Good first issues
 
 - Add a minimal offline fixture test for one parser branch.
-- Improve docs for discovering frontend APIs in browser DevTools.
+- Improve the API discovery playbook with more anonymized endpoint examples.
 - Add a small example showing how to load JSONL output into pandas.
 - Add a new retailer adapter proposal using the channel request template.
 

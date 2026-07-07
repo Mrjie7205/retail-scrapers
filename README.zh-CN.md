@@ -151,6 +151,7 @@ retail-scrape scaffold example-shop-us \
 
 - [架构说明](docs/架构说明.md)
 - [新增渠道指南](docs/新增渠道.md)
+- [API 发现手册](docs/api-discovery-playbook.zh-CN.md)
 - [Roadmap](ROADMAP.md)
 - [示例输出](examples/output.example.jsonl)
 
@@ -173,6 +174,12 @@ retail-scrape scaffold example-shop-us \
 ruff check .
 pytest
 mypy src/retail_scrapers
+```
+
+真实抓取前，可以先检查本地环境：
+
+```bash
+retail-scrape doctor
 ```
 
 ## 许可证
