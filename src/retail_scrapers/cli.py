@@ -16,6 +16,7 @@ from .output import write_records
 from .registry import list_channels
 from .runner import scrape_catalog, scrape_prices
 from .scaffold import create_adapter_scaffold
+from .schema import all_schemas, record_schema, schema_markdown
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -29,6 +30,12 @@ def _parser() -> argparse.ArgumentParser:
 
     health = sub.add_parser("health", help="显示内置渠道的能力和维护状态")
     health.add_argument("--format", choices=("json", "markdown"), default="json")
+
+    schema = sub.add_parser("schema", help="显示公共输出数据契约")
+    schema.add_argument(
+        "record", nargs="?", choices=("all", "catalog", "price", "target"), default="all"
+    )
+    schema.add_argument("--format", choices=("json", "markdown"), default="json")
 
     doctor = sub.add_parser("doctor", help="检查本地运行环境")
     doctor.add_argument("--skip-browser", action="store_true")
@@ -92,6 +99,15 @@ def main(argv: list[str] | None = None) -> int:
                 print(channel_health_markdown())
             else:
                 print(json.dumps(list_channel_health(), ensure_ascii=False, indent=2))
+            return 0
+
+        if args.command == "schema":
+            if args.format == "markdown":
+                print(schema_markdown(args.record))
+            elif args.record == "all":
+                print(json.dumps(all_schemas(), ensure_ascii=False, indent=2))
+            else:
+                print(json.dumps(record_schema(args.record), ensure_ascii=False, indent=2))
             return 0
 
         if args.command == "doctor":

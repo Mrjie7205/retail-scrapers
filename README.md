@@ -81,6 +81,13 @@ List available channels:
 retail-scrape channels
 ```
 
+Inspect output contracts:
+
+```bash
+retail-scrape schema
+retail-scrape schema catalog --format markdown
+```
+
 Scrape an Elkjøp TV catalog for selected years:
 
 ```bash
@@ -161,6 +168,7 @@ This creates a starter adapter package, a matching identity test, and optional s
 - [Adding a channel](docs/add-channel.md)
 - [API discovery playbook](docs/api-discovery-playbook.md)
 - [Channel health](docs/channel-health.md)
+- [Downstream usage](docs/downstream-usage.md)
 - [Roadmap](ROADMAP.md)
 - [Example output](examples/output.example.jsonl)
 

@@ -81,6 +81,13 @@ python -m pip install -e ".[dev]"
 retail-scrape channels
 ```
 
+查看输出数据契约：
+
+```bash
+retail-scrape schema
+retail-scrape schema catalog --format markdown
+```
+
 抓取 Elkjøp 指定年份的电视目录：
 
 ```bash
@@ -161,6 +168,7 @@ retail-scrape scaffold example-shop-us \
 - [新增渠道指南](docs/新增渠道.md)
 - [API 发现手册](docs/api-discovery-playbook.zh-CN.md)
 - [渠道健康状态](docs/channel-health.zh-CN.md)
+- [下游使用方式](docs/downstream-usage.zh-CN.md)
 - [Roadmap](ROADMAP.md)
 - [示例输出](examples/output.example.jsonl)
 

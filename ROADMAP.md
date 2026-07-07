@@ -10,6 +10,7 @@ Retail Scrapers is intentionally small: it should stay focused on reliable extra
 - Expand the adapter scaffold command with optional parser helper templates.
 - Add more first-run diagnostics to `retail-scrape doctor`.
 - Improve examples for catalog extraction, price extraction, and downstream storage.
+- Add more schema examples for common warehouse and notebook workflows.
 
 ## Adapter quality
 

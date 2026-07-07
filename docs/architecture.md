@@ -27,6 +27,13 @@ validation in strict mode
 CSV / JSONL / Python objects
 ```
 
+You can inspect the output contract with:
+
+```bash
+retail-scrape schema
+retail-scrape schema catalog --format markdown
+```
+
 ## Directory responsibilities
 
 - `core/`: shared browser and price-parsing utilities.

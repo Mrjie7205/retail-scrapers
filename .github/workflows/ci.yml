@@ -33,6 +33,8 @@ jobs:
       - name: CLI smoke tests
         run: |
           python -m retail_scrapers channels
+          python -m retail_scrapers schema
+          python -m retail_scrapers schema catalog --format markdown
           python -m retail_scrapers health
           python -m retail_scrapers health --format markdown
           python -m retail_scrapers doctor --skip-browser
