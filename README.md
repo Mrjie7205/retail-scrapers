@@ -176,6 +176,7 @@ This creates a starter adapter package, a matching identity test, and optional s
 
 - [Architecture](docs/architecture.md)
 - [Adding a channel](docs/add-channel.md)
+- [90-second new channel demo](docs/new-channel-demo.md)
 - [API discovery playbook](docs/api-discovery-playbook.md)
 - [Channel health](docs/channel-health.md)
 - [Downstream usage](docs/downstream-usage.md)

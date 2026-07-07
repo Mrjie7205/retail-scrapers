@@ -6,6 +6,7 @@ import argparse
 import asyncio
 import json
 import sys
+from pathlib import Path
 from typing import Any
 
 from .doctor import run_doctor
@@ -15,7 +16,7 @@ from .input import read_targets
 from .output import write_records
 from .registry import list_channels
 from .runner import scrape_catalog, scrape_prices
-from .scaffold import create_adapter_scaffold
+from .scaffold import create_adapter_scaffold, scaffold_instructions
 from .schema import all_schemas, record_schema, schema_markdown
 
 
@@ -122,9 +123,14 @@ def main(argv: list[str] | None = None) -> int:
                 country=args.country,
                 with_fixtures=args.with_fixtures,
             )
+            cwd = Path.cwd()
+            created = [_display_path(path, cwd) for path in paths]
             print(
                 json.dumps(
-                    {"created": [str(path) for path in paths]},
+                    {
+                        "created": created,
+                        "instructions": scaffold_instructions(args.channel_id),
+                    },
                     ensure_ascii=False,
                     indent=2,
                 )
@@ -163,6 +169,13 @@ def main(argv: list[str] | None = None) -> int:
     except (ScraperError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
+
+
+def _display_path(path: Path, root: Path) -> str:
+    try:
+        return path.relative_to(root).as_posix()
+    except ValueError:
+        return str(path)
 
 
 if __name__ == "__main__":

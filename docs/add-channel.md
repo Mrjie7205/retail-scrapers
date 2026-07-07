@@ -15,6 +15,8 @@ Do not start by guessing prices from visible text. Machine-readable fields are u
 
 ## 2. Create an adapter
 
+For a compact copy-paste walkthrough, see the [90-second new channel demo](new-channel-demo.md).
+
 Generate a starter adapter package:
 
 ```bash

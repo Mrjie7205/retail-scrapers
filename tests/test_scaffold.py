@@ -6,6 +6,7 @@ from retail_scrapers.scaffold import (
     class_name,
     create_adapter_scaffold,
     package_name,
+    scaffold_instructions,
 )
 
 
@@ -60,3 +61,15 @@ def test_create_adapter_scaffold_with_fixtures(tmp_path: Path):
     )
     assert '"channel": "example-shop-us"' in fixture
     assert "example.com" in fixture
+
+
+def test_scaffold_instructions_include_registry_snippet():
+    instructions = scaffold_instructions("example-shop-us")
+
+    assert instructions["adapter_class"] == "ExampleShopUsAdapter"
+    assert (
+        instructions["registry_import"]
+        == "from .adapters.example_shop_us import ExampleShopUsAdapter"
+    )
+    assert instructions["registry_entry"] == "ExampleShopUsAdapter(),"
+    assert "src/retail_scrapers/registry.py" in " ".join(instructions["next_steps"])

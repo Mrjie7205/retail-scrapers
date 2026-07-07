@@ -139,6 +139,25 @@ def test_{package}_price_fixture_is_minimal_and_sanitized():
 '''
 
 
+def scaffold_instructions(channel_id: str) -> dict[str, str | list[str]]:
+    """Return human-facing next steps for a newly generated adapter."""
+
+    package = package_name(channel_id)
+    klass = class_name(channel_id)
+    return {
+        "adapter_class": klass,
+        "registry_import": f"from .adapters.{package} import {klass}",
+        "registry_entry": f"{klass}(),",
+        "next_steps": [
+            "Implement scrape_catalog and scrape_prices in the generated adapter.",
+            "Add the registry import and registry entry to src/retail_scrapers/registry.py.",
+            f"Run pytest tests/test_{package}_adapter.py.",
+            "Replace synthetic fixtures with small sanitized public samples "
+            "if --with-fixtures was used.",
+        ],
+    }
+
+
 def create_adapter_scaffold(
     channel_id: str,
     *,

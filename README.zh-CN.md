@@ -174,6 +174,7 @@ retail-scrape scaffold example-shop-us \
 
 - [架构说明](docs/架构说明.md)
 - [新增渠道指南](docs/新增渠道.md)
+- [90 秒新增渠道 demo](docs/新增渠道demo.md)
 - [API 发现手册](docs/api-discovery-playbook.zh-CN.md)
 - [渠道健康状态](docs/channel-health.zh-CN.md)
 - [下游使用方式](docs/downstream-usage.zh-CN.md)

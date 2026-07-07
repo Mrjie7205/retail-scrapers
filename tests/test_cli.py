@@ -48,6 +48,18 @@ def test_schema_markdown_command(capsys):
     assert "`status`" in output
 
 
+def test_scaffold_command_prints_next_steps(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+
+    assert main(["scaffold", "example-shop-us", "--with-fixtures"]) == 0
+    output = json.loads(capsys.readouterr().out)
+
+    assert output["created"]
+    assert output["created"][0] == "src/retail_scrapers/adapters/example_shop_us/__init__.py"
+    assert output["instructions"]["adapter_class"] == "ExampleShopUsAdapter"
+    assert "registry.py" in " ".join(output["instructions"]["next_steps"])
+
+
 def test_runtime_options_are_validated(capsys):
     assert main(["catalog", "--channel", "elkjop-no", "--timeout-ms", "0"]) == 1
     assert "timeout_ms" in capsys.readouterr().err
