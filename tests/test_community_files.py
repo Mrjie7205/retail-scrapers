@@ -24,3 +24,10 @@ def test_channel_request_collects_public_adapter_entry_points():
     assert "id: desired_modes" in text
     assert "id: discovery" in text
     assert "work without login, cookies, or private credentials" in text
+
+
+def test_issue_forms_are_the_default_support_path():
+    text = (ISSUE_TEMPLATES / "config.yml").read_text(encoding="utf-8")
+
+    assert "blank_issues_enabled: false" in text
+    assert "Responsible use reminder" in text
