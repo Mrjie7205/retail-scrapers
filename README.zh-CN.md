@@ -56,6 +56,8 @@ retail-scrape catalog \
 {"channel":"elkjop-no","country":"NO","sku":"123456","brand":"Example","title":"Example 55 inch 4K TV","url":"https://www.example.com/product/123456","price":7990.0,"currency":"NOK","availability":"in_stock"}
 ```
 
+想快速看懂完整路径，可以打开[项目橱窗](docs/showcase.zh-CN.md)，一次看清如何运行渠道、生成新 adapter，以及把输出接到下游。
+
 ## 为什么做这个项目
 
 很多爬虫示例停留在“打开网页、解析文本”。真实零售网站需要更稳的模式：
@@ -203,6 +205,7 @@ retail-scrape scaffold example-shop-us \
 - [渠道健康状态](docs/channel-health.zh-CN.md)
 - [下游使用方式](docs/downstream-usage.zh-CN.md)
 - [GitHub Actions 自动化](docs/automation.zh-CN.md)
+- [项目橱窗](docs/showcase.zh-CN.md)
 - [Roadmap](ROADMAP.md)
 - [示例输出](examples/output.example.jsonl)
 

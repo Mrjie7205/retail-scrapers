@@ -57,6 +57,9 @@ Example output:
 {"channel":"elkjop-no","country":"NO","sku":"123456","brand":"Example","title":"Example 55 inch 4K TV","url":"https://www.example.com/product/123456","price":7990.0,"currency":"NOK","availability":"in_stock"}
 ```
 
+Want the whole path at a glance? Open the [project showcase](docs/showcase.md) to see
+how to run a channel, scaffold a new adapter, and connect the output downstream.
+
 ## Why this exists
 
 Most scraper examples stop at "grab a page and parse some text." Real retail websites need a stronger pattern:
@@ -206,6 +209,7 @@ This creates a starter adapter package, a matching identity test, and optional s
 - [Channel health](docs/channel-health.md)
 - [Downstream usage](docs/downstream-usage.md)
 - [GitHub Actions automation](docs/automation.md)
+- [Project showcase](docs/showcase.md)
 - [Roadmap](ROADMAP.md)
 - [Example output](examples/output.example.jsonl)
 
