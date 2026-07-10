@@ -1,38 +1,77 @@
-name: Channel request
-description: Propose a new public retail channel adapter.
-title: "[Channel]: "
-labels: ["channel-request"]
+name: New retailer request
+description: Propose a public retail channel for a new adapter or fork contribution.
+title: "[Channel] "
+labels:
+  - enhancement
 body:
+  - type: markdown
+    attributes:
+      value: |
+        A useful channel request gives contributors a reproducible starting point. This
+        project only accepts public, non-login retail data sources.
+
   - type: input
     id: retailer
     attributes:
-      label: Retailer
-      placeholder: "Retailer name and country"
+      label: Retailer and market
+      placeholder: Example Shop — United States
     validations:
       required: true
+
   - type: input
     id: catalog_url
     attributes:
       label: Public catalog URL
-      placeholder: "https://www.example.com/category"
+      description: A category or search page that can be opened without an account.
+      placeholder: https://www.example.com/tvs
     validations:
       required: true
-  - type: textarea
-    id: data_source
+
+  - type: input
+    id: product_url
     attributes:
-      label: Known data source
-      description: Mention visible APIs, JSON-LD, server HTML, or why Playwright may be required.
-  - type: textarea
-    id: completeness
-    attributes:
-      label: Completeness signal
-      description: Does the site expose total count, page count, SKU, availability, or stable product IDs?
+      label: Public product URL
+      description: One representative product detail page, with no tracking or session token.
+      placeholder: https://www.example.com/product/example-tv
+    validations:
+      required: true
+
   - type: checkboxes
-    id: scope
+    id: desired_modes
     attributes:
-      label: Scope check
+      label: Desired extraction paths
       options:
-        - label: The requested data is public and does not require login.
+        - label: Catalog discovery
+        - label: Current price extraction
+    validations:
+      required: true
+
+  - type: textarea
+    id: discovery
+    attributes:
+      label: Known frontend API or page behavior
+      description: |
+        If known, describe JSON endpoints, pagination, total counts, Schema.org data,
+        browser requirements, or rate-limit behavior. Do not paste private tokens.
+      placeholder: The category page calls a public JSON endpoint with page and total parameters.
+
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Contribution intent
+      options:
+        - I want to implement this adapter
+        - I can test or provide sanitized fixtures
+        - I am requesting community help
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Public-data boundary
+      options:
+        - label: The example URLs work without login, cookies, or private credentials.
           required: true
-        - label: The request does not involve personal data.
+        - label: The request does not include personal data or a real scraped dataset.
           required: true

@@ -1,5 +1,1 @@
-blank_issues_enabled: false
-contact_links:
-  - name: Responsible use reminder
-    url: https://docs.github.com/en/site-policy/github-terms/github-terms-of-service
-    about: Do not include credentials, cookies, personal data, or private scraped datasets in public issues.
+blank_issues_enabled: true

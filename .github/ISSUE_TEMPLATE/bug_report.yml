@@ -1,44 +1,83 @@
-name: Bug report
-description: Report a reproducible problem with an existing adapter or shared runtime.
-title: "[Bug]: "
-labels: ["bug"]
+name: Adapter bug report
+description: Report broken, incomplete, or incorrect public retail extraction.
+title: "[Bug] "
+labels:
+  - bug
 body:
-  - type: textarea
-    id: summary
+  - type: markdown
     attributes:
-      label: What happened?
-      description: Describe the failure and what you expected instead.
-    validations:
-      required: true
-  - type: input
+      value: |
+        Thanks for helping keep a live retail adapter healthy. Please remove cookies,
+        tokens, personal data, and real scraped datasets before submitting.
+
+  - type: dropdown
     id: channel
     attributes:
       label: Channel
-      placeholder: "amazon-de, boulanger-fr, currys-gb, elkjop-no"
-    validations:
-      required: true
-  - type: textarea
-    id: command
-    attributes:
-      label: Command
-      description: Paste the command you ran. Remove secrets, cookies, proxy URLs, and private data.
-      render: bash
-    validations:
-      required: true
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant logs
-      description: Paste the smallest useful log excerpt. Do not include credentials or personal information.
-      render: text
-  - type: dropdown
-    id: environment
-    attributes:
-      label: Environment
+      description: Which built-in adapter is affected?
       options:
-        - Local machine
-        - GitHub Actions
-        - Container / CI
+        - amazon-de
+        - boulanger-fr
+        - currys-gb
+        - elkjop-no
+        - Shared CLI or runtime
         - Other
     validations:
       required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Extraction mode
+      options:
+        - catalog
+        - prices
+        - both
+        - not applicable
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Minimal command
+      description: Share the smallest command that reproduces the problem. Redact secrets.
+      placeholder: retail-scrape catalog --channel elkjop-no --max-items 3 --no-strict
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What output or validation result did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include a short, redacted error or validation summary.
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system and Python version.
+      placeholder: Ubuntu 24.04, Python 3.12
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, cookies, personal information, and real scraped datasets.
+          required: true
+        - label: I used public, non-login retail information and a reasonable request rate.
+          required: true
